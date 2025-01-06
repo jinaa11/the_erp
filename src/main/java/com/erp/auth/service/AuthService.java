@@ -6,6 +6,7 @@ package com.erp.auth.service;
 import com.erp.auth.vo.AuthDTOs.CreateFeatureRoleRequestDTO;
 import com.erp.auth.vo.AuthDTOs.CreateRoleRequestDTO;
 import com.erp.auth.vo.AuthDTOs.FeaturesResponseDTO;
+import com.erp.auth.vo.AuthDTOs.GetRolesResponseDTO;
 import com.erp.auth.vo.AuthDTOs.LoginRequestDTO;
 import com.erp.auth.vo.AuthDTOs.LoginResponseDTO;
 import com.erp.auth.vo.AuthDTOs.PutFeatureRequestDTO;
@@ -31,4 +32,5 @@ public interface AuthService {
 	void deleteFeature(int featureSeq);
 	void createRole(CreateRoleRequestDTO requestDto);
 	void createFeatureRole(CreateFeatureRoleRequestDTO requestDto);
+	GetRolesResponseDTO getRoles();
 }

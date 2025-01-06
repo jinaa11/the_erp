@@ -78,7 +78,21 @@
                           <td>${pavo.birth}</td>
                           <td>${pavo.before_dept}</td>
                           <td>${pavo.before_position}</td>
-                          <td>${pavo.assigned_dept}</td>
+                          
+                          <td>
+				            <c:choose>
+				                <c:when test="${pavo.assigned_dept == 1}">인사부</c:when>
+				                <c:when test="${pavo.assigned_dept == 2}">개발부</c:when>
+				                <c:when test="${pavo.assigned_dept == 21}">회계</c:when>
+				                <c:when test="${pavo.assigned_dept == 22}">총무</c:when>
+				                <c:when test="${pavo.assigned_dept == 31}">공공영업1팀</c:when>
+				                <c:when test="${pavo.assigned_dept == 32}">공공영업2팀</c:when>
+				                <c:when test="${pavo.assigned_dept == 33}">기업영업1팀</c:when>
+				                <c:when test="${pavo.assigned_dept == 34}">기업영업2팀</c:when>
+				                <c:otherwise>알 수 없음</c:otherwise>
+				            </c:choose>
+				          </td>
+                          
                           <td>${pavo.assigned_position}</td>
                           <td>${pavo.assignment_type}</td>
                           <td>${pavo.notes}</td>

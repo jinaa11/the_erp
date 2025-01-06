@@ -49,6 +49,12 @@ public class AuthServlet extends HttpServlet {
 			response.setStatus(HttpServletResponse.SC_OK);
 			break;
 		}
+		case "/api/v1/auth/roles": {
+			restResponse = RestResponse.builder().message("OK").resonseDate(new Date()).data(authService.getRoles())
+					.build();
+			response.setStatus(HttpServletResponse.SC_OK);
+			break;
+		}
 		default:
 			throw new RestBusinessException(StatusCode.BAD_REQUEST);
 		}

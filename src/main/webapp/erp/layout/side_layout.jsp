@@ -78,6 +78,10 @@
 					<ul class="nav flex-column sub-menu">
 						<li class="nav-item"><a class="nav-link"
 							href="/facility/list">시설관리</a></li>
+						<li class="nav-item"><a class="nav-link"
+							href="/erp/ga/product/products.jsp">상품 관리</a></li>
+						<li class="nav-item"><a class="nav-link"
+							href="/erp/ga/product/product_manage.jsp">상품 대여/판매/추가</a></li>	
 					</ul>
 				</div></li>
 
