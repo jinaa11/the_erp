@@ -1,4 +1,4 @@
-package com.erp.finance.common;
+package com.erp.finance.capital;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,12 +9,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class CapitalManagementDTO {
 	
 	private long capitalManagementSeq;

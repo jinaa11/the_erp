@@ -35,9 +35,16 @@ public class MaintenanceDTO {
     
     public static String getInsertMaintenanceQuery() {
         return "INSERT INTO facility_maintenance "
-             + "(maintenance_id, facility_id, working_date, work_detail, work_status, work_cost) "
-             + "VALUES (maintenance_seq.NEXTVAL, ?, ?, ?, ?, ?)";
+             + "(maintenance_id, facility_id, work_status) "
+             + "VALUES (maintenance_seq.NEXTVAL, ?, ?)";
     }
+
+    
+//    public static String getInsertMaintenanceQuery() {
+//    	return "INSERT INTO facility_maintenance "
+//    			+ "(maintenance_id, facility_id, working_date, work_detail, work_status, work_cost) "
+//    			+ "VALUES (maintenance_seq.NEXTVAL, ?, ?, ?, ?, ?)";
+//    }
     
     public static MaintenanceDTO fromResultSet(ResultSet rs) throws SQLException {
         return new MaintenanceDTO(
