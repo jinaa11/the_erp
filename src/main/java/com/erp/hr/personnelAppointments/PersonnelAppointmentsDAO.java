@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import com.erp.hr.common.DBManager;
 import com.erp.hr.common.OracleDBManager;
+import com.erp.hr.employeeCard.HrVO;
 
 
 public class PersonnelAppointmentsDAO {
@@ -39,10 +40,10 @@ public class PersonnelAppointmentsDAO {
 						pvo.setPa_date(rs.getDate("pa_date"));
 						pvo.setUser_seq(rs.getInt("user_seq"));
 						pvo.setUser_name(rs.getString("user_name"));
-						
+						pvo.setBirth(rs.getDate("birth"));
 						pvo.setBefore_dept(rs.getString("before_dept"));
 						pvo.setBefore_position(rs.getString("before_position"));
-						pvo.setAssigned_dept(rs.getString("assigned_dept"));
+						pvo.setAssigned_dept(rs.getInt("assigned_dept"));
 						pvo.setAssigned_position(rs.getString("assigned_position"));
 						pvo.setAssignment_type(rs.getInt("assignment_type"));
 						pvo.setNotes(rs.getString("notes"));
@@ -70,10 +71,11 @@ public class PersonnelAppointmentsDAO {
 		try {
 			String sql = "select p.* , a.user_name as user_name, a.birth as birth\r\n"
 					+ "from (select personnel_appointments_history.* ,\r\n"
-					+ "	  ROW_NUMBER() OVER (ORDER BY pah_seq DESC) AS rnum\r\n"
-					+ "	  from personnel_appointments_history) p, app_users a\r\n"
+					+ "        ROW_NUMBER() OVER (ORDER BY pah_seq DESC) AS rnum\r\n"
+					+ "        from personnel_appointments_history) p, app_users a\r\n"
 					+ "where p.user_seq = a.user_seq(+)\r\n"
-					+ "and p.rnum between ? and ?";
+					+ "and p.rnum between ? and ?\r\n"
+					+ "order by pah_seq desc";
 			pstmt =  conn.prepareStatement(sql);
 			pstmt.setInt(1, startSeq);
 			pstmt.setInt(2, endSeq);
@@ -85,10 +87,10 @@ public class PersonnelAppointmentsDAO {
 					pvo.setPa_date(rs.getDate("pa_date"));
 					pvo.setUser_seq(rs.getInt("user_seq"));
 					pvo.setUser_name(rs.getString("user_name"));
-					
+					pvo.setBirth(rs.getDate("birth"));
 					pvo.setBefore_dept(rs.getString("before_dept"));
 					pvo.setBefore_position(rs.getString("before_position"));
-					pvo.setAssigned_dept(rs.getString("assigned_dept"));
+					pvo.setAssigned_dept(rs.getInt("assigned_dept"));
 					pvo.setAssigned_position(rs.getString("assigned_position"));
 					pvo.setAssignment_type(rs.getInt("assignment_type"));
 					pvo.setNotes(rs.getString("notes"));
@@ -130,10 +132,10 @@ public class PersonnelAppointmentsDAO {
 			pvo.setPa_date(rs.getDate("pa_date"));
 			pvo.setUser_seq(rs.getInt("user_seq"));
 			pvo.setUser_name(rs.getString("user_name"));
-			
+			pvo.setBirth(rs.getDate("birth"));
 			pvo.setBefore_dept(rs.getString("before_dept"));
 			pvo.setBefore_position(rs.getString("before_position"));
-			pvo.setAssigned_dept(rs.getString("assigned_dept"));
+			pvo.setAssigned_dept(rs.getInt("assigned_dept"));
 			pvo.setAssigned_position(rs.getString("assigned_position"));
 			pvo.setAssignment_type(rs.getInt("assignment_type"));
 			pvo.setNotes(rs.getString("notes"));
@@ -153,9 +155,12 @@ public class PersonnelAppointmentsDAO {
 		DBManager dbm  = OracleDBManager.getInstance();
 		Connection conn = dbm.connect();
 		PreparedStatement pstmt = null;
+		PreparedStatement pstmt2 = null;
+		
 		int rows = 0;
 		
 		try {   
+			// 인사발령 내역 삽입 SQL
 			String sql = "INSERT INTO personnel_appointments_history (\r\n"
 					+ "    pah_seq,\r\n"
 					+ "    pa_date,\r\n"
@@ -167,30 +172,62 @@ public class PersonnelAppointmentsDAO {
 					+ "    assignment_type,\r\n"
 					+ "    notes\r\n"
 					+ ") VALUES (PA_HISTORY_SEQ.NEXTVAL,?,?,?,?,?,?,?,?)";
-
-
+			
+			// 사용자 정보 업데이트 SQL
+			String sql2 = "UPDATE app_users\r\n"
+					+ "SET department_id = ? ,\r\n"
+					+ "	position = ? ,\r\n"
+					+ "	modify_date = SYSDATE\r\n"
+					+ "WHERE user_seq = ?";
+			
+			System.out.println("pvo dao = " +pvo);
+			
+			// 첫 번째 PreparedStatement 설정
 			pstmt =  conn.prepareStatement(sql);
 			
 				pstmt.setDate(1, pvo.getPa_date());
-				
-//				pstmt.setDate(1, new java.sql.Date(pvo.getPa_date().getTime()));
-				
 				pstmt.setInt(2, pvo.getUser_seq());
 				pstmt.setString(3, pvo.getBefore_dept());
 				pstmt.setString(4, pvo.getBefore_position());
-				pstmt.setString(5, pvo.getAssigned_dept());
+				pstmt.setInt(5, pvo.getAssigned_dept());
 				pstmt.setString(6, pvo.getAssigned_position());
 				pstmt.setInt(7, pvo.getAssignment_type());
 				pstmt.setString(8, pvo.getNotes());
-				
-			rows = pstmt.executeUpdate();
 			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			dbm.close(conn, pstmt);
-		}
-		return rows;
+			// 두 번째 PreparedStatement 설정
+			pstmt2 =  conn.prepareStatement(sql2);
+			
+				pstmt2.setInt(1, pvo.getAssigned_dept());
+				pstmt2.setString(2, pvo.getAssigned_position());
+				pstmt2.setInt(3, pvo.getUser_seq());
+				
+	        // 트랜잭션 시작
+	        conn.setAutoCommit(false);
+
+	        // 첫 번째 쿼리 실행
+	        rows = pstmt.executeUpdate();
+
+	        // 두 번째 쿼리 실행
+	        pstmt2.executeUpdate();
+
+	        // 트랜잭션 커밋
+	        conn.commit();
+	        
+	    } catch (SQLException e) {
+	        // 예외 발생 시 롤백
+	        if (conn != null) {
+	            try {
+	                conn.rollback();
+	            } catch (SQLException ex) {
+	                ex.printStackTrace();
+	            }
+	        }
+	        e.printStackTrace();
+	    } finally {
+	        // 리소스 해제
+	        dbm.close(conn, pstmt, pstmt2);
+	    }
+	    return rows;
 	}
 
 

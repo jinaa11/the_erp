@@ -22,7 +22,7 @@ public class PaVO {
 		private Date   birth;				//생년월일
 		private String before_dept;			//이전 부서
 		private String before_position;		//이전 직급
-		private String assigned_dept;		//발령 부서
+		private int assigned_dept;			//발령 부서
 		private String assigned_position;	//발령 직급
 		private int    assignment_type;		//발령구분
 		private String notes;				//설명
