@@ -67,7 +67,7 @@
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title">상품 대여/추가/판매</h4>
-                        <input type="button" value="상품 관리 추가" style="flex: 1; padding: 8px; box-sizing: border-box;" id="add-product-modal">
+                        <input type="button" value="상품 대여/추가/판매" style="flex: 1; padding: 8px; box-sizing: border-box;" id="add-product-modal">
                         <div class="table-responsive">
                             <table class="table table-hover" id="dynamicTable">
                                 <thead>

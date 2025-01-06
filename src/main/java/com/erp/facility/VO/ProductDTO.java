@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 public class ProductDTO {
 	
@@ -72,6 +73,7 @@ public class ProductDTO {
 	@NoArgsConstructor
 	@AllArgsConstructor
 	@Builder
+	@ToString
 	public static class CreateProductManagementRequestDTO {
 		private String managementType;
 		private int cost;

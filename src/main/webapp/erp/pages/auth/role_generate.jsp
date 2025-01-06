@@ -101,7 +101,6 @@
 				</div>
 			</div>
 		</div>
-		>
 		<!-- page-body-wrapper ends -->
 	</div>
 	<%@ include file="/erp/layout/footer_layout.jsp"%>
@@ -110,8 +109,12 @@
 		<div class="modal-content">
 			<span class="close" id="roleModalClose">&times;</span>
 			<h4>권한 추가</h4>
-			<!-- 여기서 권한 추가 폼을 만들면 됩니다 -->
-			<input type="text" id="departmentId" placeholder="부서 ID"><br />
+			<label for="departmentId">관련부서: </label>
+			<select id="departmentId" name="departmentId">
+			  <option value="1">인사</option>
+			  <option value="21">회계</option>
+			  <option value="22">총무</option>
+			</select>
 			<br />
 			<!-- <input type="text" id="roleHttpMethod" placeholder="HTTP 메서드"><br/><br/>
 	        <input type="text" id="roleUserName" placeholder="추가자"><br/><br/> -->
@@ -124,12 +127,21 @@
 		<div class="modal-content">
 			<span class="close" id="featureRoleModalClose">&times;</span>
 			<h4>기능별 권한 추가</h4>
-			<!-- 여기서 기능별 권한 추가 폼을 만들면 됩니다 -->
 			<input type="text" id="featureRoleUrl" placeholder="URL 주소"><br />
-			<br /> <input type="text" id="featureRoleHttpMethod"
-				placeholder="HTTP 메서드"><br />
-			<br /> <input type="text" id="featureRoleContraintRoleSeq"
-				placeholder="관련권한"><br />
+			<br /> 
+			<label for="featureRoleHttpMethod">관련 권한: </label>
+			<select id="featureRoleHttpMethod" name="featureRoleHttpMethod">
+			  <option value="GET">GET</option>
+			  <option value="PUT">PUT</option>
+			  <option value="POST">POST</option>
+			  <option value="DELETE">DELETE</option>
+			</select><br />
+			<br /> 
+			<!-- select 태그로 변경 -->
+			<label for="featureRoleContraintRoleSeq">관련권한: </label>
+			<select id="featureRoleContraintRoleSeq">
+				<!-- 서버에서 받아온 데이터로 동적으로 옵션을 추가할 예정 -->
+			</select><br />
 			<br />
 			<button id="saveFeatureRole">저장</button>
 		</div>
@@ -390,21 +402,87 @@
 									}
 								});
 							}
+							
+						});
+	</script>
+	<script>
+		$(document)
+				.ready(
+						function() {
+							// 기능별 권한 추가 모달을 띄울 때 해당 부서 목록을 가져오기
+							$.ajax({
+								url: '/api/v1/auth/roles', // 역할 목록을 가져오는 API 엔드포인트
+								method: 'GET',
+								contentType: 'application/json',
+								dataType: 'json',
+								success: function(response) {
+									// 성공적으로 데이터를 받았을 경우
+									let roles = response.data.roleSummaries; // roleSummaries
+									let selectBox = $('#featureRoleContraintRoleSeq');
 
-							/* $.ajax({
-								url : "/api/v1/auth/login",
-								method : 'POST',
-								data : JSON.stringify(sendFormData),
-								contentType : "application/json", 
-								dataType 	: "json", 	
-								//success : function(obj) {
-								success: function(obj) {
-									window.location.href = "/";
+									// 기존 옵션을 초기화
+									selectBox.empty();
+
+									// 서버에서 받은 데이터로 동적으로 옵션 추가
+									$.each(roles, function(index, role) {
+										console.log(role.roleSeq);
+										console.log(role.departmentName);
+										selectBox.append(
+												$("<option value='" + role.roleSeq + "'>" + role.departmentName + ": " + role.roleSeq + "</option>")
+										);
+									});
 								},
-								error : function(err) {
-									alert(err.responseJSON.message)
+								error: function(error) {
+									console.error('권한 목록 로드 오류:', error);
+									alert("권한 목록을 불러오는 데 실패했습니다.");
 								}
-							}); */
+							});
+
+							// '기능별 권한 추가' 버튼 클릭 시 모달 띄우기
+							$("#add-featurerole-modal").click(function() {
+								$("#featureRoleModal").show(); // 기능별 권한 추가 모달 표시
+							});
+
+							// 기능별 권한 추가 모달 닫기 (X 버튼 클릭)
+							$("#featureRoleModalClose").click(function() {
+								$("#featureRoleModal").hide(); // 기능별 권한 추가 모달 숨기기
+							});
+
+							// 모달 바깥 클릭 시 모달 닫기
+							$(window).click(function(event) {
+								if ($(event.target).is(".modal")) {
+									$(".modal").hide(); // 모달 외부를 클릭하면 모든 모달 숨기기
+								}
+							});
+
+							// 기능별 권한 추가 저장 버튼 클릭
+							$("#saveFeatureRole").click(
+								function() {
+									let featureRoleData = {
+										url : $("#featureRoleUrl").val(),
+										httpMethod : $("#featureRoleHttpMethod")
+												.val(),
+										featureRoleContraintRoleSeq : $( 
+											"#featureRoleContraintRoleSeq")
+											.val()
+									};
+
+									$.ajax({
+										url : "/api/v1/auth/feature",
+										method : "POST",
+										contentType : "application/json",
+										data : JSON.stringify(featureRoleData),
+										success : function(response) {
+											alert("기능별 권한이 추가되었습니다.");
+											$("#featureRoleModal").hide();
+											location.reload();
+										},
+										error : function(error) {
+											alert("기능별 권한 추가 중 오류가 발생했습니다.");
+											console.error(error);
+										}
+									});
+								});
 						});
 	</script>
 	<script>

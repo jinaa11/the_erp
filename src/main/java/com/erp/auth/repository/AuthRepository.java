@@ -16,6 +16,8 @@ import com.erp.auth.vo.AuthDTOs.CreateFeatureRoleRequestDTO;
 import com.erp.auth.vo.AuthDTOs.CreateRoleRequestDTO;
 import com.erp.auth.vo.AuthDTOs.FeaturesResponseDTO;
 import com.erp.auth.vo.AuthDTOs.FeaturesResponseDTO.FeatureDetail;
+import com.erp.auth.vo.AuthDTOs.GetRolesResponseDTO;
+import com.erp.auth.vo.AuthDTOs.GetRolesResponseDTO.roleSummary;
 import com.erp.auth.vo.AuthDTOs.LoginRequestDTO;
 import com.erp.auth.vo.AuthDTOs.LoginResponseDTO;
 import com.erp.auth.vo.AuthDTOs.PutFeatureRequestDTO;
@@ -217,6 +219,31 @@ public class AuthRepository {
 			throw new RestBusinessException(StatusCode.DATABASE_UKNOWN_ERROR, e);
 		}
 	}
+	
+	public GetRolesResponseDTO getRoles() {
+		GetRolesResponseDTO response = new GetRolesResponseDTO();
+		response.setRoleSummaries(new ArrayList<>());
+		try (Connection con = db.getConnectionForTransaction();
+				PreparedStatement ps = con.prepareStatement(
+						"SELECT * FROM(SELECT role_seq, department_id FROM roles) str LEFT JOIN (SELECT department_id, name FROM department) std USING(department_id)");
+				ResultSet rs = ps.executeQuery();) {
+			while (rs.next()) {
+				
+				response.getRoleSummaries()
+						.add(roleSummary.builder()
+								.roleSeq(rs.getInt("role_seq"))
+								.departmentName(rs.getString("name"))
+								.build());
+			}
+			return response;
+		} catch (SQLException e) {
+			System.out.println(e instanceof SQLIntegrityConstraintViolationException);
+			if (e instanceof SQLIntegrityConstraintViolationException)
+				throw new RestBusinessException(StatusCode.CONSTRAINT_VIOLATION);
+			throw new RestBusinessException(StatusCode.DATABASE_UKNOWN_ERROR, e);
+		}
+	}
+	
 
 	/*
 	 * 

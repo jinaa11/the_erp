@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import com.erp.auth.vo.AuthDTOs.FeaturesResponseDTO;
 import com.erp.auth.vo.AuthDTOs.FeaturesResponseDTO.FeatureDetail;
@@ -113,13 +114,23 @@ public class ProductRepository{
 				PreparedStatement ps = sp.getPreparedStatement(con, requestDto.convertToSql(),
 						requestDto.getAttributeAsObjectArray());) {
 			int rows = ps.executeUpdate();
-			if (rows == 1)
-				con.commit();
-			else {
+			if (rows != 1) {
 				con.rollback();
 				throw new RestBusinessException(StatusCode.UNEXPECTED_ERROR);
 			}
+			System.out.println(requestDto);
+			try(PreparedStatement ps2 = sp.getPreparedStatement(con, "INSERT INTO capital_management VALUES (capital_management_seq.NEXTVAL, ?, ?, ?, ?, ?, ?, product_management_seq.CURRVAL)", 
+					new Object[] {new Date(), new String("물품 " + requestDto.getManagementType()), "물류", requestDto.getCost(), "카드", "처리 안됨"})){
+				System.out.println("여기까지만큼은");
+				int rows2 = ps2.executeUpdate();
+				if(rows2 != 1) {
+					con.rollback();
+					throw new RestBusinessException(StatusCode.UNEXPECTED_ERROR);
+				}
+			}
+				con.commit();
 		} catch (SQLException e) {
+			e.printStackTrace();
 			System.out.println(e instanceof SQLIntegrityConstraintViolationException);
 			if (e instanceof SQLIntegrityConstraintViolationException)
 				throw new RestBusinessException(StatusCode.CONSTRAINT_VIOLATION);

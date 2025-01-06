@@ -153,5 +153,23 @@ public class AuthDTOs {
 		}
 	}
 	
+	@NoArgsConstructor
+	@Builder
+	@AllArgsConstructor
+	@Getter
+	@Setter
+	public static class GetRolesResponseDTO{
+		List<roleSummary> roleSummaries; 
+		
+		@NoArgsConstructor
+		@Builder
+		@AllArgsConstructor
+		@Getter
+		@Setter
+		public static class roleSummary{
+			private int roleSeq;
+			private String departmentName;
+		}
+	}
 
 }

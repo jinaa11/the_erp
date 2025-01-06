@@ -8,6 +8,7 @@ import com.erp.auth.service.AuthService;
 import com.erp.auth.vo.AuthDTOs.CreateFeatureRoleRequestDTO;
 import com.erp.auth.vo.AuthDTOs.CreateRoleRequestDTO;
 import com.erp.auth.vo.AuthDTOs.FeaturesResponseDTO;
+import com.erp.auth.vo.AuthDTOs.GetRolesResponseDTO;
 import com.erp.auth.vo.AuthDTOs.LoginRequestDTO;
 import com.erp.auth.vo.AuthDTOs.LoginResponseDTO;
 import com.erp.auth.vo.AuthDTOs.PutFeatureRequestDTO;
@@ -60,6 +61,11 @@ public class AuthServiceImpl implements AuthService{
 	@Override
 	public void createFeatureRole(CreateFeatureRoleRequestDTO requestDto) {
 		authRepository.createFeatureRole(requestDto);
+	}
+
+	@Override
+	public GetRolesResponseDTO getRoles() {
+		return authRepository.getRoles();
 	}
 	
 }
