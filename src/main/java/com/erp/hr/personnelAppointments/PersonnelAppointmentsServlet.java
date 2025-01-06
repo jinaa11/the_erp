@@ -146,14 +146,6 @@ public class PersonnelAppointmentsServlet extends HttpServlet {
    			System.out.println("DB에 입력완료 : " + res + "건");
    			
 
-<<<<<<< HEAD
-=======
-   			
-//   			System.out.println("Parsed PaVO: " + pvo);
-   			
-   			int res = padao.insert(pvo);
-   			
->>>>>>> 12b35d4147d58a2f9613f9ed90989813afcbd4f4
    			// 응답 타입을 JSON 객체로 설정
    			response.setContentType("application/json; charset=UTF-8");
 
