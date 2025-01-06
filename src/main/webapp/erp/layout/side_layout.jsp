@@ -65,6 +65,8 @@
 							href="/v1/attendance/selectAll">근태관리</a></li>
 						<li class="nav-item"><a class="nav-link"
 							href="/employeeCardServlet">인사카드</a></li>
+						<li class="nav-item"><a class="nav-link"
+							href="/PAServlet">인사발령</a></li>
 					</ul>
 				</div></li>
 			<li class="nav-item"><a class="nav-link" data-toggle="collapse"

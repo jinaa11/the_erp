@@ -35,6 +35,7 @@ public class RestBusinessException extends RuntimeException {
 		, CONSTRAINT_VIOLATION("중복된 값을 입력하셨습니다.", 400)
 		, DATABASE_UKNOWN_ERROR("데이터베이스에서 알 수 없는 오류가 발생했습니다.", 400)
 		, INVALID_IP_PASSWORD("아이디 또는 암호가 올바르지않습니다", 400)
+		, DTO_CONVERT_ERROR("DTO 파싱중 오류가 발생하였습니", 400)
 		, UNEXPECTED_ERROR("예상치 못한 오류", 400)
 		, USER_NOT_EXISTS("없는 사용자입니다.", 400)
 		, UNAUTHORIZED("로그인이 필요합니다.", 401)

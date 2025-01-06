@@ -9,6 +9,9 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.erp.common.rest.RestBusinessException;
+import com.erp.common.rest.RestBusinessException.StatusCode;
+
 /**
  * Description : Query To DTO Converter<br>
  * Date : 2024. 12. 29.<br>
@@ -72,7 +75,8 @@ public class DtoConverter {
 	        return dto;
 	    } catch (Exception e) {
 	        e.printStackTrace(); 
-	        throw new RuntimeException("DTO 변환 중 오류 발생: " + e.getMessage(), e);
+	        throw new RestBusinessException(StatusCode.DTO_CONVERT_ERROR);
+	        
 	    }
 	}
 	
@@ -89,9 +93,9 @@ public class DtoConverter {
 	        if (targetType == Date.class) 
 	        	return new SimpleDateFormat("yyyy-MM-dd").parse(value); 
 	        
-	        throw new RuntimeException("지원하지 않는 타입: " + targetType);
+	        throw new RestBusinessException(StatusCode.DTO_CONVERT_ERROR);
 	    } catch (Exception e) {
-	        throw new RuntimeException("값 변환 실패 - 값: " + value + ", 타입: " + targetType, e);
+	    	 throw new RestBusinessException(StatusCode.DTO_CONVERT_ERROR);
 	    }
 	}
 

@@ -34,7 +34,7 @@ public class FinanceServlet extends HttpServlet {
 		    }
 
 		    int blockCount = 10; // 한 페이지당 출력할 레코드 수
-		    int blockPage = 5;   // 한 블록당 출력할 페이지 수
+		    int blockPage = 10;   // 한 블록당 출력할 페이지 수
 		    int totRecord = dao.getAccountsTotalCount(); // 전체 레코드 수 조회
 
 		    PagingUtil pg = new PagingUtil("/finance/accounts", currentPage, totRecord, blockCount, blockPage);

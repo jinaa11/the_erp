@@ -15,10 +15,8 @@ public class MaintenanceDTO {
 
 	private long maintenanceId;
     private long facilityId;
-    private Date workingDate;
-    private String workDetail;
     private String workStatus;
-    private String workCost;
+
 
     public static String finOneMaxMaintenance() {
     	return "SELECT * FROM ("
@@ -45,10 +43,7 @@ public class MaintenanceDTO {
         return new MaintenanceDTO(
             rs.getLong("maintenance_id"),
             rs.getLong("facility_id"),
-            rs.getDate("working_date"),
-            rs.getString("work_detail"),
-            rs.getString("work_status"),
-            rs.getString("work_cost")
+            rs.getString("work_status")
         );
     }
 
@@ -57,10 +52,7 @@ public class MaintenanceDTO {
     public Object[] getAttributeAsObjectArray() {
         return new Object[] {
             this.facilityId,
-            this.workingDate,
-            this.workDetail,
             this.workStatus,
-            this.workCost
         };
     }
 }

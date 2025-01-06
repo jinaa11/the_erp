@@ -19,7 +19,7 @@ public class LoggingFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String uri = httpRequest.getRequestURI();
         
-        if (!uri.matches(".*(\\.(jsp|png|jpg|css|js|woff2|ico|svg|map))$"))
+        if (!uri.matches(".*(\\.(jsp|png|jpg|css|js|woff2|ico|svg|map|env))$"))
             System.out.println("요청 URI: " + uri);
         
 
