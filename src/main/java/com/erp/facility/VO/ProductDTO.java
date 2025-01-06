@@ -1,5 +1,6 @@
 package com.erp.facility.VO;
 
+import java.util.Date;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -78,13 +79,14 @@ public class ProductDTO {
 		private String managementType;
 		private int cost;
 		private int productSeq;
+		private Date manageAt;
 		
 		public String convertToSql() {
-			return "INSERT INTO product_management values(product_management_seq.NEXTVAL, ?, ?, ?)";
+			return "INSERT INTO product_management values(product_management_seq.NEXTVAL, ?, ?, ?, ?)";
 		}
 		
 		public Object[] getAttributeAsObjectArray() {
-			return new Object[] {this.managementType, this.cost, this.productSeq};
+			return new Object[] {this.managementType, this.cost, this.manageAt, this.productSeq};
 		}
 	}
 	

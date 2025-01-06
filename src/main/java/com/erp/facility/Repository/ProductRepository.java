@@ -120,7 +120,7 @@ public class ProductRepository{
 			}
 			System.out.println(requestDto);
 			try(PreparedStatement ps2 = sp.getPreparedStatement(con, "INSERT INTO capital_management VALUES (capital_management_seq.NEXTVAL, ?, ?, ?, ?, ?, ?, product_management_seq.CURRVAL)", 
-					new Object[] {new Date(), new String("물품 " + requestDto.getManagementType()), "물류", requestDto.getCost(), "카드", "처리 안됨"})){
+					new Object[] {requestDto.getManageAt(), new String("물품 " + requestDto.getManagementType()), "물류", requestDto.getCost(), "카드", "처리 안됨"})){
 				System.out.println("여기까지만큼은");
 				int rows2 = ps2.executeUpdate();
 				if(rows2 != 1) {

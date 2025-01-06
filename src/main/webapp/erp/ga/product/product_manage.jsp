@@ -105,6 +105,9 @@
 			</select>
             <br />
             <input type="text" id="management_cost" placeholder="상품 가격"><br />
+            <!-- 날짜 입력 (HTML5 date input) -->
+	        <label for="product_date">상품 날짜:</label>
+	        <input type="date" id="product_date" name="product_date"><br />
             <input type="text" id="product_seq" placeholder="상품 고유 코드"><br />
             <button id="saveRole">저장</button>
         </div>
@@ -255,6 +258,7 @@
                 let roleData = {
                		managementType: $("#product_type").val(),
                		cost: $("#management_cost").val(),
+               		manageAt: $("#product_date").val(),
                		productSeq: $("#product_seq").val()                		
                 };
                
@@ -264,7 +268,7 @@
                     contentType: "application/json",
                     data: JSON.stringify(roleData),
                     success: function(response) {
-                        alert("상품이 추가되었습니다.");
+                    	alert("추가 완료");
                         $("#productModal").hide();
                     },
                     error: function(error) {
