@@ -53,14 +53,15 @@ public class MaintenanceServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String actionPage = request.getParameter("actionp");
-		if(actionPage.equals("save")) {
-			
-			// QueryParam 을 DTO로 변
-			MaintenanceDTO maintenanceDTO = convertToDto(request, MaintenanceDTO.class);  
-			System.out.println("maintenanceDTO = " + maintenanceDTO);
-			maintenanceService.save(maintenanceDTO);
-			
-		} else if(actionPage.equals("modify")) {
+//		if(actionPage.equals("save")) {
+//			
+//			// QueryParam 을 DTO로 변
+//			MaintenanceDTO maintenanceDTO = convertToDto(request, MaintenanceDTO.class);  
+//			System.out.println("maintenanceDTO = " + maintenanceDTO);
+//			maintenanceService.save(maintenanceDTO);
+//			
+//		} 
+		 if(actionPage.equals("modify")) {
 			MaintenanceDTO maintenanceDTO = convertToDto(request, MaintenanceDTO.class);  
 			System.out.println("inspectionDTO = " + maintenanceDTO);
 			int result = maintenanceService.update(maintenanceDTO);

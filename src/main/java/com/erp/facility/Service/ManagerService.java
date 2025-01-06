@@ -6,7 +6,7 @@ import com.erp.facility.VO.ManagerDTO;
 import com.erp.facility.dto.UserSmallDTO;
 
 /**
- * Description : Facility에 관한 서비스 모음 <br>
+ * Description : Manager에 관한 서비스 모음 <br>
  * Date :  2025. 1. 1.<br>
  * History :<br>
  * - 작성자 :최영범, 날짜 : 2025. 1. 1. 설명 : Manager에 관한 서비스 모음<br>

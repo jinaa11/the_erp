@@ -13,8 +13,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.mindrot.jbcrypt.BCrypt;
-
 import com.erp.common.rest.RestBusinessException;
 import com.erp.common.rest.RestBusinessException.StatusCode;
 import com.erp.facility.Service.FacilityService;
@@ -24,8 +22,9 @@ import com.erp.facility.Service.impl.FacilityServiceImpl;
 import com.erp.facility.Service.impl.MaintenanceServiceImpl;
 import com.erp.facility.Service.impl.ManagerServiceImpl;
 import com.erp.facility.VO.FacilityDTO;
-import com.erp.facility.VO.MaintenanceDTO;
+
 import com.erp.facility.VO.ManagerDTO;
+import com.erp.facility.dto.CommomGetDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static com.erp.facility.common.DtoConverter.convertToDto;
@@ -49,12 +48,17 @@ public class FacilityServlet extends HttpServlet {
 		// 아무것도 없다면 list로 보내기
 		if (pathInfo == null) {
 			
+			
 			response.sendRedirect("/facility/list");
-
+			
+			
 			// 시설관리 리스트 보기
 		} else if (pathInfo.equals("/list")) {
-			List<FacilityDTO> allList = facilityService.findAll();
 
+			List<FacilityDTO> allList = facilityService.findAll();
+			
+
+			
 			request.setAttribute("Fac_LIST", allList);
 			request.getRequestDispatcher("/erp/ga/facility/facility_main.jsp").forward(request, response);
 
@@ -70,9 +74,9 @@ public class FacilityServlet extends HttpServlet {
 				FacilityDTO facility = facilityService.findDetailsFacility(seq);
 				ManagerDTO manager = managerService.findDetailsManager(seq);
 				
-				List<MaintenanceDTO> mList = maintenanceService.findALl(seqStr);
+				List<CommomGetDTO> mList = maintenanceService.findALl(seqStr);
 				
-				
+//				System.out.println("mListmList = " + mList);
 
 				request.setAttribute("FACILITY", facility);
 				request.setAttribute("MANAGER", manager);
@@ -199,30 +203,38 @@ public class FacilityServlet extends HttpServlet {
 		    response.setCharacterEncoding("UTF-8");
 		    PrintWriter out = response.getWriter();
 		    ObjectMapper mapper = new ObjectMapper();
+		    CommomGetDTO commomGetDTO = mapper.readValue(request.getReader(), CommomGetDTO.class);	 
 		    
+		    
+//			System.out.println("maintenance = " + commomGetDTO);
+			
 		    try {
 		        // JSON 요청 데이터를 DTO로 변환
-		        MaintenanceDTO maintenance = mapper.readValue(request.getReader(), MaintenanceDTO.class);
-		        
+	        		        
 		        // 저장 처리
-		        int result = maintenanceService.save(maintenance);		       	        
-		        String fSeq = String.valueOf(maintenance.getFacilityId());
+		        int result = maintenanceService.save(commomGetDTO);		       	        
+		        String fSeq = String.valueOf(commomGetDTO.getReferenceSeq());
 		        
 		        // 저장 후 해당 시설의 전체 유지보수 목록 조회
-		        List<MaintenanceDTO> mList = maintenanceService.findALl(fSeq);
-		        MaintenanceDTO dto = maintenanceService.findOneMax(fSeq);
+		        List<CommomGetDTO> mList = maintenanceService.findALl(fSeq);
+		        CommomGetDTO dto = maintenanceService.findOneMax(fSeq);
+//		        System.out.println("dto = " + dto);
+//		        System.out.println("mList = " + mList);
+				
 		        Map<String, Object> responseData = new HashMap<>();
 //		        System.out.println("dto : "+ dto);	  		        
 //		        System.out.println("dto.getWorkingDate().toString() : "+ dto.getWorkingDate().toString());	  		        
 		        // 응답 데이터 구성
 		        responseData.put("success", result == 1);
-		        responseData.put("maintenance", dto!=null ? dto : maintenance);	               
+		        responseData.put("maintenance", dto!=null ? dto : commomGetDTO);	               
 		        responseData.put("maintenanceList", mList);
 
 		        
 		        
 		        // JSON 응답 전송
 		        mapper.writeValue(out, responseData);
+		        
+		        System.out.println(dto);
 		        
 		    } catch (Exception e) {
 		        e.printStackTrace();
