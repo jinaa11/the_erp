@@ -71,7 +71,6 @@ public class AuthRepository {
 		try (Connection con = db.getConnectionForTransaction();
 				PreparedStatement ps = sp.getPreparedStatement(con, requestDto.convertToSql(),
 						requestDto.getAttributeAsObjectArray());) {
-			System.out.println("실행2");
 			int rows = ps.executeUpdate();
 			System.out.println(rows);
 			if (rows == 1)
@@ -100,8 +99,6 @@ public class AuthRepository {
 				userPassword = rs.getString("user_password");
 			}
 			if (userSeq == -1 || userPassword == null || !BCrypt.checkpw(requestDto.getUserPassword(), userPassword)) {
-				System.out.println(userSeq);
-				System.out.println(userPassword);
 				throw new RestBusinessException(StatusCode.INVALID_IP_PASSWORD);
 			}
 			return UserInfo.builder().userSeq(userSeq).roles(getUserRole(userSeq)).build();
