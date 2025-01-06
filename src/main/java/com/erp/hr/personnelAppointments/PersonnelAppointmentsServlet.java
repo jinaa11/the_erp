@@ -137,26 +137,29 @@ public class PersonnelAppointmentsServlet extends HttpServlet {
 //   			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 //   			om.setDateFormat(sdf);
    			
-			//JSON 데이터를 Java 객체로 변환
+//			JSON 데이터를 Java 객체로 변환
 			PaVO pvo = om.reader().readValue(jsonString, PaVO.class);
-   			
-   			
-   			
-//   		PaVO pvo  = DtoConverter.convertToDto(request, PaVO.class);
+			System.out.println("Parsed PaVO: " + pvo);
+
+
+   			int res = padao.insert(pvo);
+   			System.out.println("DB에 입력완료 : " + res + "건");
    			
 
+<<<<<<< HEAD
+=======
    			
 //   			System.out.println("Parsed PaVO: " + pvo);
    			
    			int res = padao.insert(pvo);
    			
+>>>>>>> 12b35d4147d58a2f9613f9ed90989813afcbd4f4
    			// 응답 타입을 JSON 객체로 설정
    			response.setContentType("application/json; charset=UTF-8");
 
    			//정상적으로 DB에 입력 된 경우
 			if (res > 0) {
 				response.getWriter().write("{\"status\":1, \"message\":\"인사발령 등록 성공\"}");
-				response.sendRedirect("/erp/hr/personnelAppointments/personnelAppointments_list.jsp");
 			} else {
 	        	response.getWriter().write("{\"status\":0, \"message\":\"인사발령 등록 실패\"}");
    			}
