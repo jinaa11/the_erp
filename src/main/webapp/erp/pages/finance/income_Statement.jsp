@@ -9,7 +9,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>손익계산서</title>
+    <title> </title>
     <link rel="stylesheet" href="/erp/vendors/typicons.font/font/typicons.css">
     <link rel="stylesheet" href="/erp/vendors/css/vendor.bundle.base.css">
     <link rel="stylesheet" href="/erp/css/vertical-layout-light/style.css">
@@ -111,6 +111,14 @@ body {
         background-color: #f8f9fa; /* Optional: Footer background color */
         padding: 10px 0;
     }
+    
+#printbtn{    
+	position: fixed; /* 화면에 고정 */
+    right: 100px; /* 화면 오른쪽에서 50px 떨어짐 */
+    z-index: 1000; /* 다른 요소 위에 표시 */
+    }
+
+
 </style>
 </head>
 <body>
@@ -136,7 +144,10 @@ body {
                     <div class="col-lg-12 grid-margin stretch-card">
                         <div class="card">
                             <div class="card-body">
+                                    <button id = "printbtn" onclick="printDiv('printableArea')">Print</button>
+									<div id="printableArea">
                                 <div class="centered-header">
+                                
                                     <h2>손익계산서</h2>
                                 </div>
                                 <div class="sub-header">
@@ -186,6 +197,7 @@ body {
                     </div>
                 </div>
             </div>
+            </div>
 			<%@ include file="/erp/layout/footer_layout.jsp"%>
         </div>
         </div>
@@ -202,6 +214,23 @@ body {
     <script src="/erp/js/template.js"></script>
     <script src="/erp/js/settings.js"></script>
     <script src="/erp/js/todolist.js"></script>
-    
+    <script>
+    function printDiv(divId) {
+        var printContents = document.getElementById(divId).innerHTML;
+        var originalContents = document.body.innerHTML;
+
+        // 전체 화면 내용을 변경하여 해당 부분만 출력
+        document.body.innerHTML = printContents;
+
+        // 브라우저 프린트 실행
+        window.print();
+
+        // 원래 내용 복원
+        document.body.innerHTML = originalContents;
+
+        // 페이지 새로고침 방지
+        window.location.reload();
+    }
+</script>
 </body>
 </html>

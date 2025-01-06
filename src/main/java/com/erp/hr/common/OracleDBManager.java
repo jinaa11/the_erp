@@ -80,6 +80,18 @@ public class OracleDBManager implements DBManager {
 			e.printStackTrace();
 		}
 	}
+
+	@Override
+	public void close(Connection conn, PreparedStatement pstmt, PreparedStatement pstmt2) {
+		try {
+			if(pstmt2 != null)   pstmt.close();
+			if(pstmt != null)   pstmt.close();
+			if(conn != null)    conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
 	
 
 }
