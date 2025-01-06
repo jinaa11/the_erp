@@ -2,10 +2,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%@ taglib prefix="x" uri="http://java.sun.com/jsp/jstl/xml"%>
-<%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql"%>
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 
 <head>
 <!-- Required meta tags -->
@@ -51,24 +50,25 @@
 
 
 
+
 									<div class="card-body">
 
 
 										<h2 class="card-title">비용</h2>
 
-										<div class="checkbox-group" style="margin-bottom: 15px; display: flex; gap: 30px;">
+										<div class="checkbox-group" style="margin-bottom: 15px; display: flex; gap: 30px; align-items: flex-start;">
 											<!-- 첫 번째 체크박스 그룹 -->
 											<div class="card" style="padding: 15px; min-width: 200px;">
 												<h5 style="font-weight: 700; margin-bottom: 15px; color: #333;">항목선택</h5>
 												<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
 													<div>
-														<label><input type="checkbox" name="department" value="logistics"> 물류</label>
+														<label><input type="checkbox" name="department" value="물류"> 물류</label>
 													</div>
 													<div>
-														<label><input type="checkbox" name="department" value="facility"> 시설</label>
+														<label><input type="checkbox" name="department" value="시설"> 시설</label>
 													</div>
 													<div>
-														<label><input type="checkbox" name="department" value="hr"> 인사</label>
+														<label><input type="checkbox" name="department" value="인"> 인사</label>
 													</div>
 												</div>
 											</div>
@@ -78,20 +78,25 @@
 												<h5 style="font-weight: 700; margin-bottom: 15px; color: #333;">처리상태</h5>
 												<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
 													<div>
-														<label><input type="checkbox" name="status" value="pending"> 처리 안됨</label>
+														<label><input type="checkbox" name="status" value="처리 안됨"> 처리 안됨</label>
 													</div>
 													<div>
-														<label><input type="checkbox" name="status" value="processing"> 처리 중</label>
+														<label><input type="checkbox" name="status" value="처리 중"> 처리 중</label>
 													</div>
 													<div>
-														<label><input type="checkbox" name="status" value="completed"> 처리 완료</label>
+														<label><input type="checkbox" name="status" value="처리 완료"> 처리 완료</label>
 													</div>
 													<div>
-														<label><input type="checkbox" name="status" value="rejected"> 거부</label>
+														<label><input type="checkbox" name="status" value="거부"> 거부</label>
 													</div>
 												</div>
 											</div>
+
+											<!-- 검색 버튼 -->
+											<button type="button" id="searchBtn" class="btn btn-primary" style="padding: 12px 40px; font-size: 24px;">검색</button>
 										</div>
+
+
 
 										<div class="table-responsive">
 
@@ -108,16 +113,17 @@
 														<th scope="col">처리상태</th>
 													</tr>
 												</thead>
+
 												<tbody id="table-tbody">
 													<c:forEach var="item" items="${ALIST}">
-														<tr>
+														<tr data-id="${item.capitalManagementSeq}" name="seqId">
 															<td>${item.referenceSeq}</td>
 															<td>${item.manageAt}</td>
 															<td>${item.summary}</td>
 															<td>${item.capitalType}</td>
 															<td><fmt:formatNumber value="${item.cost}" pattern="#,###" />원</td>
 															<td>${item.paymentType}</td>
-															<td><c:choose>
+															<td class="status-cell"><c:choose>
 																	<c:when test="${item.status eq '처리 안됨'}">
 																		<label class="badge badge-warning">${item.status}</label>
 																	</c:when>
@@ -134,15 +140,22 @@
 																		<label class="badge badge-secondary">${item.status}</label>
 																	</c:otherwise>
 																</c:choose></td>
+															<td class="action-cell">
+																<button class="btn btn-sm btn-outline-primary edit-btn">수정</button>
+																<div class="btn-group" style="display: none;">
+																	<button class="btn btn-sm btn-success save-btn">완료</button>
+																	<button class="btn btn-sm btn-danger cancel-btn">취소</button>
+																</div>
+															</td>
 														</tr>
 													</c:forEach>
 												</tbody>
+
+
+
+
 											</table>
-
-
-
 										</div>
-										<br>
 									</div>
 								</div>
 							</div>
@@ -175,6 +188,159 @@
 
 	<script>
 		
+	
+	// HTML에 체크박스 이벤트와 검색 버튼 클릭 이벤트를 추가
+			$(document).ready(function() {
+    // 검색 버튼 클릭 이벤트
+		    $('#searchBtn').click(function() {
+		        sendAjaxRequest();
+		    });
+		
+		    // Ajax 공통 요청 함수
+		    function sendAjaxRequest(additionalData = {}) {
+		        let capitalTypes = [];
+		        let statuses = [];
+		        
+		        $('input[name="department"]:checked').each(function() {
+		            capitalTypes.push($(this).val());
+		        });
+		        
+		        $('input[name="status"]:checked').each(function() {
+		            statuses.push($(this).val());
+		        });
+		
+		        const baseData = {
+		            'capitalTypes': capitalTypes,
+		            'statuses': statuses
+		        };
+		
+		        const requestData = { ...baseData, ...additionalData };
+		
+		        $.ajax({
+		            url: '/capital' + (additionalData.action ? '?action=' + additionalData.action : ''),
+		            type: 'POST',
+		            data: requestData,
+		            traditional: true,
+		            success: function(response) {		            	
+		            	if (additionalData.action === 'edit') {
+		                    alert('변경 완료');
+		                }
+		                updateTable(response);
+		            },
+		            error: function(xhr, status, error) {
+		                console.error('Error:', error);
+		                if (additionalData.action === 'edit') {
+		                    alert('상태 업데이트 실패');
+		                }
+		            }
+		        });
+		    }
+		
+		    // 테이블 업데이트 함수
+		    function updateTable(data) {
+		        const tbody = $('#table-tbody');
+		        tbody.empty();
+		
+		        if (!data || data.length === 0 || data[0].capitalManagementSeq === null) {
+		            tbody.append('<tr><td colspan="8" class="text-center">자금 관리 내역이 없습니다.</td></tr>');
+		            return;
+		        }
+		
+		        data.forEach(function(item) {
+		            let statusHtml = '';
+		            switch(item.status) {
+		                case '처리 안됨':
+		                    statusHtml = '<label class="badge badge-warning">처리 안됨</label>';
+		                    break;
+		                case '처리 중':
+		                    statusHtml = '<label class="badge badge-info">처리 중</label>';
+		                    break;
+		                case '처리 완료':
+		                    statusHtml = '<label class="badge badge-success">처리 완료</label>';
+		                    break;
+		                case '거부':
+		                    statusHtml = '<label class="badge badge-danger">거부</label>';
+		                    break;
+		                default:
+		                    statusHtml = '<label class="badge badge-secondary">-</label>';
+		            }
+		
+		            const formattedCost = new Intl.NumberFormat('ko-KR').format(item.cost);
+		            const row = $("<tr>")
+		                .attr('data-id', item.capitalManagementSeq)
+		                .append($("<td>").text(item.referenceSeq || '-'))
+		                .append($("<td>").text(item.manageAt ? formatDate(item.manageAt) : '-'))
+		                .append($("<td>").text(item.summary || '-'))
+		                .append($("<td>").text(item.capitalType || '-'))
+		                .append($("<td>").text(item.cost ? formattedCost + '원' : '-'))
+		                .append($("<td>").text(item.paymentType || '-'))
+		                .append($("<td>").addClass('status-cell').html(statusHtml))
+		                .append($("<td>").addClass('action-cell').html(`
+		                    <button class="btn btn-sm btn-outline-primary edit-btn">수정</button>
+		                    <div class="btn-group" style="display: none;">
+		                        <button class="btn btn-sm btn-success save-btn">완료</button>
+		                        <button class="btn btn-sm btn-danger cancel-btn">취소</button>
+		                    </div>
+		                `));
+		            tbody.append(row);
+		        });
+		    }
+		
+		    // 이벤트 위임을 사용한 버튼 이벤트 처리
+		    $(document).on('click', '.edit-btn', function() {
+		        const row = $(this).closest('tr');
+		        const statusCell = row.find('.status-cell');
+		        const currentStatus = statusCell.find('.badge').text();
+		        
+		        const selectBox = $('<select>', { class: 'form-control status-select' });
+		        const options = ['처리 안됨', '처리 중', '처리 완료', '거부'];
+		        
+		        options.forEach(status => {
+		            const option = $('<option>', {
+		                value: status,
+		                text: status
+		            });
+		            if (status === currentStatus) {
+		                option.attr('selected', 'selected');
+		            }
+		            selectBox.append(option);
+		        });
+		        
+		        statusCell.data('original-content', statusCell.html());
+		        statusCell.html(selectBox);
+		        $(this).hide();
+		        $(this).siblings('.btn-group').show();
+		    });
+		
+		    $(document).on('click', '.cancel-btn', function() {
+		        const row = $(this).closest('tr');
+		        const statusCell = row.find('.status-cell');
+		        statusCell.html(statusCell.data('original-content'));
+		        $(this).closest('.btn-group').hide();
+		        row.find('.edit-btn').show();
+		    });
+		
+		    $(document).on('click', '.save-btn', function() {
+		        const row = $(this).closest('tr');
+		        const selectedStatus = row.find('select').val();
+		        const capitalManagementSeq = row.data('id');
+		        
+		        sendAjaxRequest({
+		            action: 'edit',
+		            id: capitalManagementSeq,
+		            status: selectedStatus
+		        });
+		    });
+		});
+		
+		function formatDate(dateStr) {
+		    const date = new Date(dateStr);
+		    return date.toLocaleDateString('ko-KR');
+		}
+
+	   
+
+	
 	</script>
 </body>
 

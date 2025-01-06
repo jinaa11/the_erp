@@ -38,7 +38,7 @@ public class CommomGetDTO {
     public static String findAllMaintenance() {
         return "select c.*, f.* "
         		+ "from facility_maintenance f, capital_management c "
-        		+ "where capital_type = '시설관리' and f.facility_id = ? and f.maintenance_id = c.REFERENCE_SEQ "       		
+        		+ "where capital_type = '시설' and f.facility_id = ? and f.maintenance_id = c.REFERENCE_SEQ "       		
         		+ "order by CAPITAL_MANAGEMENT_SEQ desc";
     }
     
@@ -47,7 +47,7 @@ public class CommomGetDTO {
         return "SELECT * FROM ("
         		+ "    SELECT c.*, f.*"
         		+ "    FROM facility_maintenance f, capital_management c"
-        		+ "    WHERE capital_type = '시설관리' "
+        		+ "    WHERE capital_type = '시설' "
         		+ "    AND f.facility_id = ? "
         		+ "    AND f.maintenance_id = c.REFERENCE_SEQ"
         		+ "    ORDER BY CAPITAL_MANAGEMENT_SEQ DESC"

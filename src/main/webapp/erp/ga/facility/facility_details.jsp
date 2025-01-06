@@ -103,7 +103,7 @@
 												<!-- Hidden inputs -->
 												<input type="hidden" name="referenceSeq" value="${FACILITY.facilityId}"> 
 												<input type="hidden" name="status" value="처리 안됨"> 
-												<input type="hidden" name="capitalType" value="시설관리">
+												<input type="hidden" name="capitalType" value="시설">
 
 											
 												<div class="row mb-4">

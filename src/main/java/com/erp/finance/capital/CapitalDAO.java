@@ -7,10 +7,41 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.erp.common.rest.RestBusinessException;
+import com.erp.common.rest.RestBusinessException.StatusCode;
+import com.erp.finance.FinanceVO;
 import com.erp.finance.common.DBManager;
 import com.erp.finance.common.OracleDBManager;
 
 public class CapitalDAO {
+	
+	
+	public int statusUpdate(String sequence, String updateValue ) {
+	    DBManager dbm = OracleDBManager.getInstance();
+	    Connection conn = dbm.connect();
+	    PreparedStatement pstmt = null;
+	    boolean isSuccess = false;
+
+	    try {
+	    	String query = "update capital_management set status = ? where capital_management_seq = ?";
+
+	        pstmt = conn.prepareStatement(query);
+	        pstmt.setString(1, updateValue);
+	        pstmt.setString(2, sequence);
+
+
+	        return pstmt.executeUpdate();
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        dbm.close(conn, pstmt, null);
+	    }
+	    throw new RestBusinessException(StatusCode.UNEXPECTED_ERROR);
+	}
+	
+	
+	
 	
 	
 	
@@ -76,6 +107,8 @@ public class CapitalDAO {
 	        
 	        query.append(" ORDER BY manage_at");
 	        
+//	       System.out.println("Seleter Find Query = " + query);
+	        
 	        pstmt = conn.prepareStatement(query.toString());
 	        
 	        for (int i = 0; i < params.size(); i++) {
@@ -85,8 +118,15 @@ public class CapitalDAO {
 	        rs = pstmt.executeQuery();
 	        while (rs.next()) {
 	            CapitalManagementDTO vo = new CapitalManagementDTO();
-	            // DTO 설정 로직
-	            cList.add(vo);
+	            vo.setCapitalManagementSeq(rs.getLong("CAPITAL_MANAGEMENT_SEQ"));
+            	vo.setManageAt(rs.getDate("MANAGE_AT")); 
+            	vo.setSummary(rs.getString("SUMMARY"));
+            	vo.setCapitalType(rs.getString("CAPITAL_TYPE"));
+            	vo.setCost(rs.getLong("COST"));
+            	vo.setPaymentType(rs.getString("PAYMENT_TYPE"));
+            	vo.setStatus(rs.getString("STATUS"));
+            	vo.setReferenceSeq(rs.getLong("REFERENCE_SEQ"));
+            	cList.add(vo);
 	        }
 	    } catch (SQLException e) {
 	        e.printStackTrace();
