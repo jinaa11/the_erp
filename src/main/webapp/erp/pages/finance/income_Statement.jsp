@@ -103,7 +103,7 @@ body {
         margin: 0;
         padding: 0;
     }
-    .footer {
+.footer {
         position: relative;
         bottom: 0;
         width: calc(100% - 0px); /* Adjust the footer width */
@@ -113,10 +113,20 @@ body {
     }
     
 #printbtn{    
-	position: fixed; /* 화면에 고정 */
-    right: 100px; /* 화면 오른쪽에서 50px 떨어짐 */
+	position: absolute; /* 화면에 고정 */
+	border-radius: 3px;
+	top: 50px;
+    right: 130px; /* 화면 오른쪽에서 50px 떨어짐 */
     z-index: 1000; /* 다른 요소 위에 표시 */
-    }
+    background-color: #f0f7ff;
+    border: none;
+    width: 4%;
+    height: 30px;
+}
+
+#printbtn:hover{
+	background-color: #ccdbed;
+}
 
 
 </style>
