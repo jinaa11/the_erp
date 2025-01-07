@@ -121,16 +121,18 @@ public class EmployeeCardServlet extends HttpServlet {
    			int res = edao.insaCardInsert(hvo);
    			
    			// 응답 타입을 JSON 객체로 설정
-   			response.setContentType("application/json; charset=UTF-8");
-   	        
+//   			response.setContentType("application/json; charset=UTF-8");
+//   	        
+//			
+//   			// 정상적으로 DB에 입력시 1 반환, 실패시 0 반환
+//			if (res > 0) {
+//				response.getWriter().write("{\"status\":1, \"message\":\"정상 입력됨\"}");
+//			} else {
+//				response.getWriter().write("{\"status\":0, \"message\":\"입력 실패\"}");
+//   			}
 			
-   			// 정상적으로 DB에 입력시 1 반환, 실패시 0 반환
-			if (res > 0) {
-				response.getWriter().write("{\"status\":1, \"message\":\"정상 입력됨\"}");
-			} else {
-				response.getWriter().write("{\"status\":0, \"message\":\"입력 실패\"}");
-   			}
-
+			response.sendRedirect("/employeeCardServlet");
+	   	
    		    
 //   			HrVO hvo  = new HrVO();
 //   			try {
