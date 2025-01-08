@@ -9,7 +9,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>CelestialUI Admin</title>
+<title>	계정정보관리</title>
 <style>
 	#searchBtn{
 	  color: #fff;
@@ -104,9 +104,9 @@
 												</thead>
 
 												<tbody id="table-tbody">
-													<c:forEach var="item" items="${ALIST}">
-														<tr data-id="${item.capitalManagementSeq}" name="seqId">
-															<td>${item.referenceSeq}</td>
+													<c:forEach var="item" items="${ALIST}" varStatus="nums">
+														<tr data-id="${item.capitalManagementSeq}" name="seqId" >
+															<td>${nums.count}</td>
 															<td>${item.manageAt}</td>
 															<td>${item.summary}</td>
 															<td>${item.capitalType}</td>
@@ -231,11 +231,11 @@
 		        tbody.empty();
 		
 		        if (!data || data.length === 0 || data[0].capitalManagementSeq === null) {
-		            tbody.append('<tr><td colspan="8" class="text-center">자금 관리 내역이 없습니다.</td></tr>');
+		            tbody.append('<tr><td colspan="8" class="text-center">거래 정보 내역이 없습니다.</td></tr>');
 		            return;
 		        }
 		
-		        data.forEach(function(item) {
+		        data.forEach(function(item,index) {
 		            let statusHtml = '';
 		            switch(item.status) {
 		                case '처리 안됨':
@@ -255,9 +255,11 @@
 		            }
 		
 		            const formattedCost = new Intl.NumberFormat('ko-KR').format(item.cost);
+		            
 		            const row = $("<tr>")
 		                .attr('data-id', item.capitalManagementSeq)
-		                .append($("<td>").text(item.referenceSeq || '-'))
+		              /*   .append($("<td>").text(item.referenceSeq || '-')) */
+		                .append($("<td>").text(index + 1))
 		                .append($("<td>").text(item.manageAt ? formatDate(item.manageAt) : '-'))
 		                .append($("<td>").text(item.summary || '-'))
 		                .append($("<td>").text(item.capitalType || '-'))
